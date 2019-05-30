@@ -1,19 +1,14 @@
-# LAB - 
+# LAB - 13
 
-## Project Name
+## Bearer Authentication/
 
 ### Author: Jesse Van Volkinburg
 
 ### Links and Resources
-* [submission PR](http://xyz.com)
-* [travis](http://xyz.com)
+* [submission PR](https://github.com/401-advanced-javascript-jv/13-bearer-auth/pull/1)
+* [travis](https://www.travis-ci.com/401-advanced-javascript-jv/13-bearer-auth)
 * [back-end](http://xyz.com) (when applicable)
 * [front-end](http://xyz.com) (when applicable)
-
-#### Documentation
-* [api docs](http://xyz.com) (API servers)
-* [jsdoc](http://xyz.com) (Server assignments)
-* [styleguide](http://xyz.com) (React assignments)
 
 ### Modules
 #### `modulename.js`

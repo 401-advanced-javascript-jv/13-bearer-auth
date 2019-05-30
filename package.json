@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "## Project Name",
+  "description": "Bearer Authentication",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
