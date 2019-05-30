@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "## Project Name",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,8 +13,8 @@
     "testEnvironment": "node"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Jesse Van Volkinburg <vanvoljg@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^3.0.2",
     "cors": "^2.8.4",
@@ -30,5 +30,17 @@
     "require-directory": "^2.1.1",
     "supertest": "^3.3.0",
     "swagger-ui-express": "^4.0.2"
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/401-advanced-javascript-jv/13-bearer-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/401-advanced-javascript-jv/13-bearer-auth/issues"
+  },
+  "homepage": "https://github.com/401-advanced-javascript-jv/13-bearer-auth#readme"
 }
