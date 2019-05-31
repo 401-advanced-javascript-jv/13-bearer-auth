@@ -2,14 +2,16 @@
 
 const User = require('./users-model.js');
 
-module.exports = (req, res, next) => {
+module.exports = (request, response, next) => {
   
   try {
-    let [authType, authString] = req.headers.authorization.split(/\s+/);
+    let [authType, authString] = request.headers.authorization.split(/\s+/);
     
     switch( authType.toLowerCase() ) {
       case 'basic': 
         return _authBasic(authString);
+      case 'bearer':
+        return _authBearer(authString);
       default: 
         return _authError();
     }
@@ -18,6 +20,16 @@ module.exports = (req, res, next) => {
     next(e);
   }
   
+  function _authBearer(token) {
+    try {
+      User.authenticateToken(token) // returns an authenticated user
+        .then(_authenticate) // takes in an authenticated user
+        .catch(next);
+    } catch(error) {
+      console.log('whoops, authbearer');
+      response.sendStatus(404);
+    }
+  }
   
   function _authBasic(str) {
     // str: am9objpqb2hubnk=
@@ -33,8 +45,8 @@ module.exports = (req, res, next) => {
 
   function _authenticate(user) {
     if(user) {
-      req.user = user;
-      req.token = user.generateToken();
+      request.user = user;
+      request.token = user.generateToken();
       next();
     }
     else {

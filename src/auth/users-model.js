@@ -39,6 +39,12 @@ users.statics.createFromOauth = function(email) {
 
 };
 
+users.statics.authenticateToken = function(token) {
+  const decryptedToken = jwt.verify(token, process.env.SECRET);
+  const query = {_id: decryptedToken.id};
+  return this.findOne(query);
+}
+
 users.statics.authenticateBasic = function(auth) {
   let query = {username:auth.username};
   return this.findOne(query)
