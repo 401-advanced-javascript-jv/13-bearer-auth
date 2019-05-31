@@ -26,7 +26,6 @@ module.exports = (request, response, next) => {
         .then(_authenticate) // takes in an authenticated user
         .catch(next);
     } catch(error) {
-      console.log('whoops, authbearer');
       response.sendStatus(404);
     }
   }

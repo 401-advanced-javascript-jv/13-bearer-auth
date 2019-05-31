@@ -40,7 +40,13 @@ users.statics.createFromOauth = function(email) {
 };
 
 users.statics.authenticateToken = function(token) {
-  const decryptedToken = jwt.verify(token, process.env.SECRET);
+  let decryptedToken;
+  let verifyOptions = { maxAge: process.env.EXPIRATION };
+  try {
+    decryptedToken = jwt.verify(token, process.env.SECRET, verifyOptions);
+  } catch(error) {
+    return error;
+  }
   const query = {_id: decryptedToken.id};
   return this.findOne(query);
 }
@@ -64,7 +70,7 @@ users.methods.generateToken = function() {
     role: this.role,
   };
   
-  return jwt.sign(token, process.env.SECRET);
+  return jwt.sign(token, process.env.SECRET, signOptions);
 };
 
 module.exports = mongoose.model('users', users);
