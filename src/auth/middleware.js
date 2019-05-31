@@ -3,23 +3,25 @@
 const User = require('./users-model.js');
 
 module.exports = (request, response, next) => {
-  
+
   try {
     let [authType, authString] = request.headers.authorization.split(/\s+/);
-    
+
     switch( authType.toLowerCase() ) {
-      case 'basic': 
+      case 'basic':
+        console.log('basic');
         return _authBasic(authString);
       case 'bearer':
+        console.log('bearer');
         return _authBearer(authString);
-      default: 
+      default:
         return _authError();
     }
   }
   catch(e) {
     next(e);
   }
-  
+
   function _authBearer(token) {
     try {
       User.authenticateToken(token) // returns an authenticated user
@@ -29,14 +31,14 @@ module.exports = (request, response, next) => {
       response.sendStatus(404);
     }
   }
-  
+
   function _authBasic(str) {
     // str: am9objpqb2hubnk=
     let base64Buffer = Buffer.from(str, 'base64'); // <Buffer 01 02 ...>
     let bufferString = base64Buffer.toString();    // john:mysecret
     let [username, password] = bufferString.split(':'); // john='john'; mysecret='mysecret']
     let auth = {username,password}; // { username:'john', password:'mysecret' }
-    
+
     return User.authenticateBasic(auth)
       .then(user => _authenticate(user) )
       .catch(next);
@@ -52,9 +54,9 @@ module.exports = (request, response, next) => {
       _authError();
     }
   }
-  
+
   function _authError() {
-    next('Invalid User ID/Password');
+    next('Invalid');
   }
-  
+
 };
