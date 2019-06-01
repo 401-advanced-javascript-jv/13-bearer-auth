@@ -1,10 +1,12 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bearer Authentication",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "lint": "eslint '**/*.js'",
+    "lintfix": "eslint --fix '**/*.js'",
     "watch": "nodemon index.js",
     "test-watch": "jest --watchAll",
     "test": "jest"
@@ -13,13 +15,14 @@
     "testEnvironment": "node"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Jesse Van Volkinburg <vanvoljg@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^3.0.2",
     "cors": "^2.8.4",
     "debug": "^4.1.0",
     "dotenv": "^6.1.0",
+    "eslint": "^5.16.0",
     "express": "^4.16.3",
     "jest": "^23.6.0",
     "jsonwebtoken": "^8.4.0",
@@ -29,6 +32,25 @@
     "morgan": "^1.9.0",
     "require-directory": "^2.1.1",
     "supertest": "^3.3.0",
-    "swagger-ui-express": "^4.0.2"
-  }
+    "swagger-ui-express": "^4.0.2",
+    "uuid": "^3.3.2"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/401-advanced-javascript-jv/13-bearer-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/401-advanced-javascript-jv/13-bearer-auth/issues"
+  },
+  "homepage": "https://github.com/401-advanced-javascript-jv/13-bearer-auth#readme"
 }
