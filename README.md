@@ -1,6 +1,6 @@
 # LAB - 13
 
-## Bearer Authentication/
+## Bearer Authentication
 
 ### Author: Jesse Van Volkinburg
 
@@ -8,7 +8,6 @@
 * [submission PR](https://github.com/401-advanced-javascript-jv/13-bearer-auth/pull/1)
 * [travis](https://www.travis-ci.com/401-advanced-javascript-jv/13-bearer-auth)
 * [back-end](http://xyz.com) (when applicable)
-* [front-end](http://xyz.com) (when applicable)
 
 ### Modules
 #### `modulename.js`

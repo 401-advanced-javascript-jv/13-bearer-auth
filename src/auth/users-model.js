@@ -5,12 +5,24 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid/v4');
 
+const SECRET = process.env.SECRET;
+const TOKEN_LIFETIME = process.env.TOKEN_LIFETIME || '15m';
+const SINGLE_USE_TOKEN = !!process.env.SINGLE_USE_TOKEN;
+
+const validTokens = new Set();
+
 const users = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   email: { type: String },
   role: { type: String, default: 'user', enum: ['admin', 'editor', 'user'] },
-  authkey: {type: String},
+  authkey: { type: String },
+});
+
+users.virtual('capabilities', {
+  ref: 'capabilities',
+  localField: 'role',
+  foreignField: 'role',
 });
 
 users.pre('save', function(next) {
@@ -36,7 +48,7 @@ users.statics.createFromOauth = function(email) {
       console.log('Welcome Back', user.username);
       return user;
     })
-    .catch((error) => {
+    .catch((_) => {
       console.log('Creating new user');
       let username = email;
       let password = 'none';
@@ -45,37 +57,23 @@ users.statics.createFromOauth = function(email) {
 };
 
 users.statics.authenticateToken = function(token) {
-  let decryptedToken;
-  let verifyOptions = {};
-
-  if (process.env.EXPIRATION) {
-    switch (process.env.EXPIRATION.toLowerCase()) {
-      case '15m':
-        verifyOptions.maxAge = '30s';
-        break;
-      case '1h':
-      case '60m':
-        verifyOptions.maxAge = '1h';
-        break;
-    }
+  if (SINGLE_USE_TOKEN && validTokens.has(token)) {
+    validTokens.delete(token);
+    validTokens.add(this.generateToken());
+  } else {
+    return Promise.reject('invalid token');
   }
 
+  let decryptedToken;
+
   try {
-    decryptedToken = jwt.verify(token, process.env.SECRET, verifyOptions);
+    decryptedToken = jwt.verify(token, SECRET);
   } catch (error) {
-    console.log('token expired!');
-    return error;
+    return Promise.reject('invalid token');
   }
 
   const query = { _id: decryptedToken.id };
-  return this.findOne(query).then(authenticatedUser => {
-
-  if (decryptedToken.singleUseKey) {
-    console.log({authenticatedUser});
-    let userKey = authenticatedUser.authkey;
-    console.log({ userKey });
-  }
-  });
+  return this.findOne(query);
 };
 
 users.statics.authenticateBasic = function(auth) {
@@ -93,35 +91,35 @@ users.methods.comparePassword = function(password) {
     .then((valid) => (valid ? this : null));
 };
 
-users.methods.generateToken = function() {
+users.methods.generateToken = function(type) {
   let token = {
     id: this._id,
     role: this.role,
+    type: type || 'user',
   };
 
   let signOptions = {};
 
-  if (process.env.EXPIRATION) {
-    switch (process.env.EXPIRATION.toLowerCase()) {
-      case '15m':
-        signOptions.expiresIn = '30s';
-        break;
-      case '1h':
-      case '60m':
-        signOptions.expiresIn = '1h';
-        break;
-      case 'once':
-      case 'one':
-      case 'single':
-      case 'oneuse':
-        // this.authkey = uuid();
-        // token.singleUseKey = this.authkey;
-        // this.save().catch(console.error);
-        console.log('oneuse generatetoken');
-    }
+  if (!!TOKEN_LIFETIME && type !== 'key') {
+    signOptions.expiresIn = TOKEN_LIFETIME;
   }
 
-  return jwt.sign(token, process.env.SECRET, signOptions);
+  if (type === 'key') {
+    token.type = 'key';
+  }
+
+  let signedToken;
+  try {
+    signedToken = jwt.sign(token, SECRET, signOptions);
+  } catch (error) {
+    throw error;
+  }
+
+  if (SINGLE_USE_TOKEN) {
+    validTokens.add(signedToken);
+  }
+
+  return signedToken;
 };
 
 module.exports = mongoose.model('users', users);
