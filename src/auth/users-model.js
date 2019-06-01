@@ -3,7 +3,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const uuid = require('uuid/v4');
 
 const SECRET = process.env.SECRET;
 const TOKEN_LIFETIME = process.env.TOKEN_LIFETIME || '15m';
